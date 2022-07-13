@@ -9,13 +9,13 @@ import time
 from PIL import Image, ImageDraw, ImageFont
 import traceback
 
-picdir = ""
+#picdir = ""
 libdir = ""
 
 
 def setup():
     global picdir, libdir
-    picdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'pic')
+    #picdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'pic')
     libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'lib')
     if os.path.exists(libdir):
         sys.path.append(libdir)
@@ -32,8 +32,8 @@ def start_drawing():
         epd.init()
         epd.Clear()
 
-        font24 = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 24)
-        font18 = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 18)
+        font24 = ImageFont.truetype(os.path.join('res', 'Font.ttc'), 24)
+        font18 = ImageFont.truetype(os.path.join('res', 'Font.ttc'), 18)
 
         # Drawing on the Horizontal image
         logging.info("1.Drawing on the Horizontal image...")
@@ -56,9 +56,9 @@ def start_drawing():
         logging.info("2.Drawing on the Vertical image...")
         Limage = Image.new('1', (epd.height, epd.width), 255)  # 255: clear the frame
         draw = ImageDraw.Draw(Limage)
-        draw.text((2, 0), 'hello world', font=font18, fill=0)
+        draw.text((2, 0), 'hello world and others', font=font18, fill=0)
         draw.text((2, 20), '7.5inch epd', font=font18, fill=0)
-        draw.text((20, 50), u'微雪电子', font=font18, fill=0)
+        #draw.text((20, 50), u'微雪电子', font=font18, fill=0)
         draw.line((10, 90, 60, 140), fill=0)
         draw.line((60, 90, 10, 140), fill=0)
         draw.rectangle((10, 90, 60, 140), outline=0)
