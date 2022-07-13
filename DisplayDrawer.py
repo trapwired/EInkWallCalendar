@@ -9,18 +9,19 @@ import time
 from PIL import Image, ImageDraw, ImageFont
 import traceback
 
-#picdir = ""
+# picdir = ""
 libdir = ""
 
 
 def setup():
     global picdir, libdir
-    #picdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'pic')
+    # picdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'pic')
     libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'lib')
     if os.path.exists(libdir):
         sys.path.append(libdir)
 
     logging.basicConfig(level=logging.DEBUG)
+
 
 def start_drawing():
     try:
@@ -37,9 +38,9 @@ def start_drawing():
         draw = ImageDraw.Draw(Himage)
         draw.text((10, 0), 'Montag', font=font24, fill=0)
 
-        draw.line((0, 50, 640, 50), fill=0)
-        draw.line((0, 100, 640, 100), fill=1)
-        draw.line((0, 150, 640, 150), fill=2)
+        draw.line((0, 50, epd.width, 50), fill=0)
+        draw.line((0, 100, epd.width, 100), fill=1)
+        draw.line((0, 150, epd.width, 150), fill=2)
         # draw.line((70, 50, 20, 100), fill=0)
         # draw.rectangle((20, 50, 70, 100), outline=0)
         # draw.line((165, 50, 165, 100), fill=0)
@@ -50,14 +51,13 @@ def start_drawing():
         epd.display(epd.getbuffer(Himage))
         time.sleep(20)
 
-
         # Drawing on the Vertical image
         logging.info("2.Drawing on the Vertical image...")
         Limage = Image.new('1', (epd.height, epd.width), 255)  # 255: clear the frame
         draw = ImageDraw.Draw(Limage)
         draw.text((2, 0), 'hello world and others', font=font18, fill=0)
         draw.text((2, 20), '7.5inch epd', font=font18, fill=0)
-        #draw.text((20, 50), u'微雪电子', font=font18, fill=0)
+        # draw.text((20, 50), u'微雪电子', font=font18, fill=0)
         draw.line((10, 90, 60, 140), fill=0)
         draw.line((60, 90, 10, 140), fill=0)
         draw.rectangle((10, 90, 60, 140), outline=0)
@@ -96,6 +96,7 @@ def start_drawing():
         epd7in5_V2.epdconfig.module_exit()
         exit()
 
+
 def start_drawing_demo():
     try:
         logging.info("epd7in5_V2 Demo")
@@ -131,7 +132,7 @@ def start_drawing_demo():
         draw = ImageDraw.Draw(Limage)
         draw.text((2, 0), 'hello world and others', font=font18, fill=0)
         draw.text((2, 20), '7.5inch epd', font=font18, fill=0)
-        #draw.text((20, 50), u'微雪电子', font=font18, fill=0)
+        # draw.text((20, 50), u'微雪电子', font=font18, fill=0)
         draw.line((10, 90, 60, 140), fill=0)
         draw.line((60, 90, 10, 140), fill=0)
         draw.rectangle((10, 90, 60, 140), outline=0)
