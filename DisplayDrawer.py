@@ -36,11 +36,12 @@ def start_drawing():
         logging.info("1.Drawing on the Horizontal image...")
         Himage = Image.new('1', (epd.width, epd.height), 255)  # 255: clear the frame
         draw = ImageDraw.Draw(Himage)
-        draw.text((10, 0), 'Montag', font=font24, fill=0)
-
+        # draw.text((10, 0), 'Montag', font=font24, fill=0)
+        days = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
         # draw calendar
         draw.line((0, 50, epd.width, 50), fill=0)
         for i in range(1, 5):
+            draw.text(((i - 1) * 160 + 20, 0), days[i-1], font=font24, fill=0)
             draw.line((i * 160, 0, i * 160, epd.height))
         # draw.line((0, 100, epd.width, 100), fill=1)
         # draw.line((0, 150, epd.width, 150), fill=2)
