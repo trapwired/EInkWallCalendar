@@ -42,5 +42,6 @@ def setup_calendar():
 
 if __name__ == "__main__":
     # setup_calendar()
+    DisplayDrawer.setup()
     DisplayDrawer.start_drawing()
 
