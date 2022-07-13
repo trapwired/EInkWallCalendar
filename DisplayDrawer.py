@@ -38,9 +38,12 @@ def start_drawing():
         draw = ImageDraw.Draw(Himage)
         draw.text((10, 0), 'Montag', font=font24, fill=0)
 
+        # draw calendar
         draw.line((0, 50, epd.width, 50), fill=0)
-        draw.line((0, 100, epd.width, 100), fill=1)
-        draw.line((0, 150, epd.width, 150), fill=2)
+        for i in range(1, 5):
+            draw.line((i * 160, 0, i * 160, epd.height))
+        # draw.line((0, 100, epd.width, 100), fill=1)
+        # draw.line((0, 150, epd.width, 150), fill=2)
         # draw.line((70, 50, 20, 100), fill=0)
         # draw.rectangle((20, 50, 70, 100), outline=0)
         # draw.line((165, 50, 165, 100), fill=0)
