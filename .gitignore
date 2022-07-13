@@ -6,6 +6,9 @@ __pycache__/
 #secrets
 secrets.ini
 
+# MAC
+.DS_STORE
+
 # pycharm
 .idea/
 
