@@ -40,7 +40,7 @@ def start_drawing():
         days = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
         # draw calendar
         draw.line((0, 50, epd.width, 50), fill=0)
-        for i in range(1, 5):
+        for i in range(1, 6):
             draw.text(((i - 1) * 160 + 20, 0), days[i-1], font=font24, fill=0)
             draw.line((i * 160, 0, i * 160, epd.height))
         # draw.line((0, 100, epd.width, 100), fill=1)
