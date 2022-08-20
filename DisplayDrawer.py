@@ -19,9 +19,18 @@ cal_event_height = 50
 pad_cal_event = 2
 
 font24 = ImageFont.truetype(os.path.join('res', 'Font.ttc'), 24)
+font22 = ImageFont.truetype(os.path.join('res', 'Font.ttc'), 22)
 font18 = ImageFont.truetype(os.path.join('res', 'Font.ttc'), 18)
 font14 = ImageFont.truetype(os.path.join('res', 'Font.ttc'), 14)
 emojiFont = ImageFont.truetype(os.path.join('res', 'Symbola.ttf'), 14)
+emojiFontL = ImageFont.truetype(os.path.join('res', 'Symbola.ttf'), 22)
+
+lengths = {'a': 11, 'b': 10, 'c': 13, 'd': 10, 'e': 11, 'f': 18, 'g': 11, 'h': 10, 'i': 25, 'j': 25, 'k': 12, 'l': 25,
+           'm': 6, 'n': 10, 'o': 10, 'p': 10, 'q': 10, 'r': 14, 's': 13, 't': 18, 'u': 10, 'v': 12, 'w': 8, 'x': 12,
+           'y': 12, 'z': 13, ' ': 25, 'ä': 11, 'ö': 10, 'ü': 10, '1': 11, '2': 111, '3': 11, '4': 11, '5': 11, '6': 11,
+           '7': 11, '8': 11, '9': 11, '0': 11}
+
+# COUNTER = 26
 
 
 def setup():
@@ -30,19 +39,53 @@ def setup():
     libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'lib')
     if os.path.exists(libdir):
         sys.path.append(libdir)
-
     logging.basicConfig(level=logging.DEBUG)
 
 
-def draw_cal_event(draw, x, y, time, who, summary):
+def draw_cal_event(draw, x, y, _time, who, summary):
+    global COUNTER
     draw.rounded_rectangle(
         (x + pad_cal_event, y, x + offset_days_x - pad_cal_event - 1, y + cal_event_height), fill=1,
         outline=0,
         width=2, radius=8)
-    draw.text((x + pad_cal_event, y), time, fill=0, font=font24)
+    x += 3
+    # draw time
+    cursor = 2 * pad_cal_event
+    draw.text((x + cursor, y), _time[0:2], fill=0, font=font24)
+    cursor += 27
+    draw.text((x + cursor, y), _time[2:4], fill=0, font=font18)
+    cursor += 18
+    draw.text((x + cursor, y), _time[4:9], fill=0, font=font24)
+    cursor += 25 + 22
+    draw.text((x + cursor, y), _time[9:11], fill=0, font=font18)
 
 
-def start_drawing():
+    # draw who top right corner
+    draw.rounded_rectangle(
+        (x + 130, y, x + offset_days_x - pad_cal_event - 4, y + cal_event_height / 2 - 1), fill=1,
+        outline=0,
+        width=2, radius=8)
+    if who in ['D', 'C']:
+        draw.text((x + offset_days_x - 24, y - 1), who, fill=0, font=font22)
+    else:
+        draw.text((x + offset_days_x - 27, y + 4), '❤', fill=0, font=emojiFontL) #'😍'
+
+    # draw summary in Field
+    draw.text((x + 2 * pad_cal_event, y + 21), make_string_fit(summary), fill=0, font=font24)
+    # COUNTER += 1
+
+def make_string_fit(s):
+    i_length = lengths['i'] + 0.5
+    score = 0
+    index = 0
+    while score <= i_length:
+        score += (i_length / lengths[s[index].lower()])
+        index += 1
+        if index >= len(s):
+            return s[0:index]
+    return s[0:index - 1]
+
+def start_drawing(wd_events, n_events):
     try:
         # epd = epd7in5_V2.EPD()
         # epd.init()
@@ -59,30 +102,41 @@ def start_drawing():
         Himage = Image.new('1', (width, height), 255)  # 255: clear the frame
         draw = ImageDraw.Draw(Himage)
         # draw.text((10, 0), 'Montag', font=font24, fill=0)
-        days = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
+        # days = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
         # draw calendar
+
+        num_wd_events = 0
+        for day in wd_events:
+            num_wd_events = max(num_wd_events, len(wd_events[day]))
+
         pad_bday = 4
         draw.line((0, offset_days_y, width, offset_days_y), fill=0)
         draw.rectangle((0, 0, offset_days_x, offset_days_y), fill=0)
-        for i in range(1, 6):
-            draw.text(((i - 1) * offset_days_x + 5, 0), days[i - 1], font=font24, fill=1 if i == 1 else 0)
+        i = 1
+        for day in wd_events:
+            draw.text(((i - 1) * offset_days_x + 5, 0), day, font=font24, fill=1 if i == 1 else 0)
             draw.line((i * offset_days_x, 0, i * offset_days_x, height))
 
             # draw birthdays / whole day thingys
             pad_small = 13
-            offset = 0
-            for j in range(0, 3):
-                draw.text(((i - 1) * offset_days_x + 5, (j * pad_small) + offset_days_y + pad_bday), "🎂 Andrea Weibel",
+
+            j = 0
+            for wd_event in wd_events[day]:
+                draw.text(((i - 1) * offset_days_x + 5, (j * pad_small) + offset_days_y + pad_bday), "🎂 " + wd_event['SUMMARY'][0:17],
                           font=emojiFont, fill=0)
-                if j > offset:
-                    offset = j
-            offset += 1
-            offset *= pad_small
+                j += 1
+            offset = pad_small * num_wd_events
             # draw one calendar date
             cur_offset_y = offset + offset_days_y + pad_bday * 2
-            # draw.rounded_rectangle(((i - 1) * offset_days_x, cur_offset_y, offset_days_x, 50), fill=1, radius=5)
-            for k in range(0, 6):
-                draw_cal_event(draw, (i-1) * offset_days_x, k * (cal_event_height + 2 * pad_cal_event)+ cur_offset_y, "0910 - 1000", "D", "Summary of Event")
+
+            k = 0
+            for n_event in n_events[day]:
+                startTime = n_event['DTSTART'].dt.strftime("%H%M")
+                endTime = n_event['DTEND'].dt.strftime("%H%M")
+                draw_cal_event(draw, (i - 1) * offset_days_x, k * (cal_event_height + 2 * pad_cal_event) + cur_offset_y,
+                               startTime + ' - ' + endTime, n_event['WHO'], n_event['SUMMARY'])
+                k += 1
+            i += 1
 
         draw.line((0, offset + offset_days_y + pad_bday, width, offset + offset_days_y + pad_bday))
 
