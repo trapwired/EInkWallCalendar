@@ -8,8 +8,8 @@ import schedule
 
 from icalendar import Calendar
 
-
-days = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
+days_long = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
+days = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']
 
 
 def time_in_range(start, end, x):
@@ -18,6 +18,7 @@ def time_in_range(start, end, x):
         return start <= x <= end
     else:
         return start <= x or x <= end
+
 
 def setup_calendars():
     secrets = configparser.RawConfigParser()
@@ -70,15 +71,9 @@ def prepare_events(even):
         normal_events[daysLists] = sorted(normal_events[daysLists], key=lambda x: x['DTSTART'].dt)
     return whole_day_events, normal_events
 
-def repeating_task():
-    print('blub')
-    return
-    events = setup_calendars()
-    wd_events, n_events = prepare_events(events)
-    DisplayDrawer.start_drawing(wd_events, n_events)
-
 
 if __name__ == "__main__":
     DisplayDrawer.setup()
-    schedule.every(10).seconds.do(repeating_task)
-
+    events = setup_calendars()
+    wd_events, n_events = prepare_events(events)
+    DisplayDrawer.start_drawing(wd_events, n_events)
