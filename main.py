@@ -4,7 +4,6 @@ import datetime
 import recurring_ical_events
 from pytz import timezone
 import DisplayDrawer
-import schedule
 
 from icalendar import Calendar
 
