@@ -4,7 +4,6 @@ import datetime
 import sys
 import os
 
-
 DEBUG = False
 
 if not DEBUG:
@@ -14,7 +13,6 @@ import logging
 import time
 from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageChops
 import traceback
-
 
 # picdir = ""
 libdir = ""
@@ -36,7 +34,7 @@ emojiFontL = ImageFont.truetype(os.path.join('res', 'Symbola.ttf'), 22)
 lengths = {'a': 11, 'b': 10, 'c': 13, 'd': 10, 'e': 11, 'f': 18, 'g': 11, 'h': 10, 'i': 25, 'j': 25, 'k': 12, 'l': 25,
            'm': 6, 'n': 10, 'o': 10, 'p': 10, 'q': 10, 'r': 14, 's': 13, 't': 18, 'u': 10, 'v': 12, 'w': 8, 'x': 12,
            'y': 12, 'z': 13, ' ': 25, 'ä': 11, 'ö': 10, 'ü': 10, '1': 11, '2': 111, '3': 11, '4': 11, '5': 11, '6': 11,
-           '7': 11, '8': 11, '9': 11, '0': 11, '/': 11, ',': 20, '.' : 20, '*' : 12, '@': 8, '&': 10, '-': 11, ':': 20}
+           '7': 11, '8': 11, '9': 11, '0': 11, '/': 11, ',': 20, '.': 20, '*': 12, '@': 8, '&': 10, '-': 11, ':': 20}
 
 
 # COUNTER = 26
@@ -87,7 +85,7 @@ def make_string_fit(s):
     score = 0
     index = 0
     while score <= i_length:
-	temp_len = 10
+        temp_len = 10
         if s[index].lower() in lengths:
             temp_len = lengths[s[index].lower()]
         score += (i_length / temp_len)
