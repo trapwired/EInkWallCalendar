@@ -40,6 +40,16 @@ lengths = {'a': 11, 'b': 10, 'c': 13, 'd': 10, 'e': 11, 'f': 18, 'g': 11, 'h': 1
 # COUNTER = 26
 
 
+def display_update():
+    width, height, epd = setup_display()
+    Himage = Image.new('1', (width, height), 0)  # 255: clear the frame
+    draw = ImageDraw.Draw(Himage)
+    drawstring = "UPDATE STARTED: " + datetime.datetime.now().strftime("%d/%m/%Y - %H:%M:%S")
+    draw.text((width / 2 - 205, height / 2 -10), drawstring, font=font24, fill=1)
+    write_out(Himage, epd)
+
+
+
 def setup():
     global picdir, libdir
     # picdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'pic')
@@ -47,6 +57,7 @@ def setup():
     if os.path.exists(libdir):
         sys.path.append(libdir)
     logging.basicConfig(level=logging.DEBUG)
+    display_update()
 
 
 def draw_cal_event(draw, x, y, _time, who, summary):
@@ -95,17 +106,31 @@ def make_string_fit(s):
     return s[0:index - 1]
 
 
+def setup_display():
+    width = 800
+    height = 450
+    epd = None
+
+    if not DEBUG:
+        epd = epd7in5_V2.EPD()
+        epd.init()
+        epd.Clear()
+        width = epd.width
+        height = epd.height
+    return width, height, epd
+
+
+def write_out(Himage, epd):
+    if DEBUG:
+        Himage.save(os.path.join('out', 'test.jpg'))
+    else:
+        epd.display(epd.getbuffer(Himage))
+        epd.sleep()
+
+
 def start_drawing(wd_events, n_events):
     try:
-        if DEBUG:
-            width = 800
-            height = 450
-        else:
-            epd = epd7in5_V2.EPD()
-            epd.init()
-            epd.Clear()
-            width = epd.width
-            height = epd.height
+        width, height, epd = setup_display()
 
         logging.info("Drawing calendar")
         Himage = Image.new('1', (width, height), 0)  # 255: clear the frame
@@ -162,11 +187,12 @@ def start_drawing(wd_events, n_events):
 
         draw.line((0, offset + offset_days_y + pad_bday, width, offset + offset_days_y + pad_bday), fill=1)
 
-        if DEBUG:
-            Himage.save(os.path.join('out', 'test.jpg'))
-        else:
-            epd.display(epd.getbuffer(Himage))
-            epd.sleep()
+        # indicate last updated time
+        drawstring = "Last Updated: " + datetime.datetime.now().strftime("%d/%m/%Y - %H:%M:%S")
+        draw.rectangle((width - 243, height - 20, width, height), fill=0)
+        draw.text((width - 242, height - 19), drawstring, font=font14, fill=1)
+
+        write_out(Himage, epd)
 
     except IOError as e:
         logging.info(e)
